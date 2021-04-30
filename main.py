@@ -29,9 +29,18 @@ while 1:
         elif mode == 1 and (word == '{'):
             pageDB = dict()
         elif mode == 1 and (word == '}'):
-            with open(os.path.join('proc', 'raw', base64.b32encode(pageDB['title'].encode("UTF-8")).decode()),
-                      'w', encoding='utf-8') as w:
-                w.write(pageDB['text'])
+            if not 'title' in pageDB:
+                continue
+            if '나무위키:' in pageDB['title'] or '사용자:' in pageDB['title'] or '분류:' in pageDB['title'] or '파일:' in pageDB[
+                'title'] or '휴지통:' in pageDB['title'] or '위키운영:' in pageDB['title'] or '파일휴지통:' in pageDB[
+                'title'] or '더미:' in pageDB['title']:
+                continue
+            try:
+                with open(os.path.join('proc', 'raw', base64.b32encode(pageDB['title'].encode("UTF-8")).decode()),
+                          'w', encoding='utf-8') as w:
+                    w.write(pageDB['text'])
+            except:
+                print('Error while processing! Document "%s" will be not processed.' % pageDB['title'])
         elif mode == 1 and (word == '"') and not isEscape:
             mode = 2
             buff = ""
